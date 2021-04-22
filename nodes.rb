@@ -1,10 +1,14 @@
 require 'ruby2d'
-
+=begin
+Para ejecutar la aplicacion tenemos que haber instalado previamente 
+la gema de ruby2d.
+=end
 set title: 'LABERINTOS'
 set background: 'white'
 set width: 1280
 set height: 720 
 set resizable: true
+sleep 1
 
 =begin
 La clase nodo nos ayuda a dibujar las celdas ademas de que nos ayuda 
@@ -21,9 +25,11 @@ parametro es completamente opcional.
 class Node
     attr_reader :x_pos , :y_pos, :color, :sqr, :size , :center
     attr_reader :wall1, :wall2, :wall3, :wall4
+    attr_reader :w1, :w2,:w3,:w4
     @@father = nil
     @@distance = 1e9
     @@visited = 1
+
     
     def initialize(x, y, size, color ,*args )
         @x_pos = x 
@@ -36,24 +42,28 @@ class Node
             x2: x+20 , y2:y-10,
             color: color, width: 5
         )
+        @w1 = true
         #Pared derecha
         @wall2 = Line.new(
             x1: x+20 , y1:y-10,
             x2: x+20 , y2:y+10,
             color: color, width: 5
         )
+        @w2 = true
         #Pared inferior
         @wall3 = Line.new(
             x1: x-10 , y1:y+10,
             x2: x+20 , y2:y+10,
             color: color, width: 5
         )
+        @w3 = true
         #Pared izquierda
         @wall4 = Line.new(
             x1: x-10 , y1:y-10,
             x2: x-10 , y2:y+10,
             color: color, width: 5
         )
+        @w4 = true
         #centro(relativamete :v)
         @center = Square.new(
             x: x , y: y, 
@@ -63,67 +73,40 @@ class Node
     end
 
 
-    def wall1=(x)
-        @wall1 = Line.new(
-            x1: x-10 , y1:y-10,
-            x2: x+20 , y2:y-10,
-            color: 'white', width: 5
-        )
+    def changewall1(x)
+        @wall1.color = x
+        @w1 = false 
     end
 
-    def wall2=(x)
-        @wall2 = Line.new(
-            x1: x+20 , y1:y-10,
-            x2: x+20 , y2:y+10,
-            color: 'white', width: 5
-        )
+    def changewall2(x)
+        @wall2.color = x
+        @w2 = false 
     end
 
-    def wall3=(x)
-        @wall3 = Line.new(
-            x1: x-10 , y1:y+10,
-            x2: x+20 , y2:y+10,
-            color: 'white', width: 5
-        )
+    def changewall3(x)
+        @wall3.color = x
+        @w3 = false
     end
 
-    def wall4=(x)
-        @wall4 = Line.new(
-            x1: x-10 , y1:y-10,
-            x2: x-10 , y2:y+10,
-            color: 'white', width: 5
-        )
+    def changewall4(x)
+        @wall4.color = x
+        @w4 = false
     end
+
 
 
 
 
     def deletewall(num)
         if num == 1 then
-            @wall1 = Line.new(
-                x1: x-10 , y1:y-10,
-                x2: x+20 , y2:y-10,
-                color: 'white', width: 5
-            )
+            self.changewall1('white')
         elsif num == 2 then
-            @wall2 = Line.new(
-                x1: x+20 , y1:y-10,
-                x2: x+20 , y2:y+10,
-                color: 'white', width: 5
-            )
+            self.changewall2('white')
         elsif num == 3 then 
-            @wall3 = Line.new(
-                x1: x-10 , y1:y+10,
-                x2: x+20 , y2:y+10,
-                color: 'white', width: 5
-            )
+            self.changewall3('white')
         else 
             #Pared izquierda
-            @wall4 = Line.new(
-                x1: x-10 , y1:y-10,
-                x2: x-10 , y2:y+10,
-                color: 'white', width: 5
-            )
+            self.changewall4('white')
         end
 
     end
@@ -165,24 +148,35 @@ class Grid
             y += 20
         end
     end
+
+
+    def removewall(i, j)        
+        @@matrix[i][j].deletewall(1)         
+    end 
+
 end
 
 #Basic matrix
-a = Node.new(30, 30, 1, 'black')
-
-tick = 0
-update do
-    if(tick == 10) then 
-        a.wall2(1)
-    end
-    tick += 1
-end
+a = Node.new(30,30, 1, 'black')
 #b = Node.new(60, 30, 1, 'black')
 #c = Node.new(30, 50, 1, 'black')
 #d = Node.new(60, 50, 1, 'black')
 
+#a.deletewall(2)
 
-#g = Grid.new(30,30)
+g = Grid.new(30,30)
+
+
+tick = 0 
+update do
+    if tick < 30 then
+        g.removewall(tick,tick)
+        sleep 1
+    end
+    tick += 1
+
+end
+
 show
 
 
