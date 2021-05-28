@@ -17,6 +17,8 @@ class Node
     attr_reader :x_pos , :y_pos, :color, :sqr, :size , :center
     attr_reader :wall1, :wall2, :wall3, :wall4, :visited
     attr_reader :w1, :w2,:w3,:w4
+
+    attr_reader :father , :distance , :explored
     @@father = nil
     @@distance = 1e9
     
@@ -70,7 +72,10 @@ class Node
             z: 5
         )
 
-        @visited = 1
+        @visited = 1 #Para generar laberitos
+        @father = nil
+        @distance = Float::INFINITY
+        @explored = 1 #Para explorar los nodos
     end
 =begin
     changewall nos permite repintar las paredes para poder
@@ -123,10 +128,10 @@ eliminar y la colorea automaticamente al color del background actual.
         end
     end
 
-    def wlll1 
+    def w1 
         return @w1
     end
-    def wlll2 
+    def w2 
         return @w2
     end
     def w3 
@@ -167,7 +172,19 @@ eliminar y la colorea automaticamente al color del background actual.
     end
 
 
+    def explored=(x)
+        @explored
+    end
 
+
+    def father=(f)
+        @father
+    end
+
+    def distance=(d)
+        @distance
+    end
+    
 
     def numwalls
         n = 0
@@ -211,10 +228,10 @@ end
 
 
 class Tablero
-    attr_reader :status, :nodesE, :gridsz
-    attr_reader :wl1,:wl3,:wl2,:wl4,:wl5
+    attr_reader :status, :nodesE, :gridsz, :gen_alg
+    attr_reader :wl1,:wl3,:wl2,:wl4,:wl5,:wl6, :wl7
 
-    def initialize
+    def initialize(rows , coloums)
         @wl1 = Line.new(
             x1: 950, y1: 90,
             x2: 1250 , y2: 90,
@@ -243,17 +260,33 @@ class Tablero
             x2: 1250 , y2: 150,
             color:'black', z: 10
         )
+        @wl6 = Line.new(
+            x1: 1100, y1: 90,
+            x2: 1100 , y2: 150,
+            color:'black', z: 10
+        )
+        @wl7 = Line.new(
+            x1: 950, y1: 120,
+            x2: 1250 , y2: 120,
+            color:'black', z: 10
+        )
 
 
         @gridsz = Text.new(
-            'N x M' , x: 960,
+            'Grid size: ' + (rows.to_s + 'x' + coloums.to_s) , x: 960,
             y: 100, size:15, 
             color: 'black', z: 10
         )
 
         @status = Text.new(
             '---' , x: 960,
-            y: 115, size:15, 
+            y: 125, size:15, 
+            color: 'black', z: 10
+        )
+
+        @gen_alg =  Text.new(
+            'Generation Algorithm: ' , x: 1102,
+            y: 100, size:10, 
             color: 'black', z: 10
         )
 
@@ -278,9 +311,11 @@ end
     Podemos modificar el tamaño del tablero modificando las variables ROWS y COLUMNS. 
 =end 
 
-tab = Tablero.new
+
+#El tamaño maximo del filas y columnas es  <= 30
 ROWS = 30
 COLUMNS = 30
+tab = Tablero.new(ROWS,COLUMNS)
 grid = []
 
 xstep = 30
@@ -295,6 +330,89 @@ for i in 0...ROWS do
     end
     grid.append(r)
     ystep += 20
+end
+
+#Algunos bloques de codigo para las funciones de generar y resolver laberintos 
+dwll1 = lambda do |i,j|
+    #Elimina la pared uno si es posible 
+    if i > 0 and j >= 0 and i < ROWS and j < COLUMNS then 
+        if grid[i][j].status != 3 and grid[i][j].w1  then 
+            if i-1 >= 0 and grid[i+1][j].status != 3  and grid[i+1][j].w3 
+                grid[i][j].deletewall(1)
+                grid[i-1][j].deletewall(3)
+            else
+                return false
+            end
+        else 
+            return false
+        end
+
+        true
+    else 
+        false
+    end
+end
+
+
+dwll2 = lambda do |i,j|
+    #Elimina la pared dos si es posible 
+    if i >= 0 and j < COLUMNS-1 and i < ROWS and j >= 0  then 
+        if grid[i][j].status != 3 and grid[i][j].w2  then 
+            if j + 1 <= COLUMNS-1 and grid[i][j+1].status != 3  and grid[i][j+1].w4 
+                grid[i][j].deletewall(2)
+                grid[i][j+1].deletewall(4)
+            else
+                return false
+            end
+        else 
+            return false
+        end
+
+        true
+    else 
+        false
+    end
+end
+
+dwll3 = lambda do |i,j|
+    #Elimina la pared tres si es posible 
+    if i < ROWS-1 and j >= 0  and i >= 0 and j < COLUMNS then 
+        if grid[i][j].status != 3 and grid[i][j].w3  then 
+            if i + 1 <= ROWS-1 and grid[i+1][j].status != 3  and grid[i+1][j].w1 then
+                grid[i][j].deletewall(3)
+                grid[i+1][j].deletewall(1)
+            else
+                return false
+            end
+        else 
+            return false
+        end
+
+        true
+    else 
+        false
+    end
+end
+
+
+dwll4 = lambda do |i,j|
+    #Elimina la cuatro tres si es posible 
+    if i < ROWS and j > 0  and i >= 0 and j < COLUMNS then 
+        if grid[i][j].status != 3 and grid[i][j].w4  then 
+            if j-1 >= 0 and grid[i][j-1].status != 3  and grid[i][j-1].w2 then
+                grid[i][j].deletewall(4)
+                grid[i+1][j].deletewall(2)
+            else
+                return false
+            end
+        else 
+            return false
+        end
+
+        true
+    else 
+        false
+    end
 end
 
 sleep 5
@@ -1157,11 +1275,16 @@ end
 
 
 
-rest = false
-on :key do |event|
+rest = 0
 
-    rest = not(rest)
-    if rest then
+
+on :key_down do |event|
+
+    
+    if rest >= 4 
+        rest = 0
+    end
+    if event.key == 'r' then
         tab.status.text = 'Reseting Grid'
         tab.status.color = 'red'
         tab.status.size = 5
@@ -1188,21 +1311,20 @@ on :key do |event|
         
     end
 
-
-    if not(rest) 
+    if event.key == 'j' 
+        tab.gen_alg.text = 'Generation Algorithm: 1'
         tab.status.text = 'Generating Maze'
         tab.status.color = 'lime'
         genlab = 1
         stack = []
         stack << [rand(ROWS),rand(COLUMNS)]
         
-
         update do
     
             if genlab == 1 then
         
                 tab.status.text = 'Generating Maze'
-                tab.status.color = 'green'
+                tab.status.color = 'lime'
                 
                 top = stack[-1]
                 
@@ -2028,14 +2150,22 @@ on :key do |event|
         
             if genlab == 0 then
                 tab.status.text = 'Maze Generated'
-                tab.status.color = 'olive'
+                tab.status.color = 'olive' 
             end
         
         end
-    
-    
     end
 
+
+
+    #Implemetacion de algoritmos para solucionar el laberinto
+
+    #BFS
+    if event.key == 'b'
+        
+    end
+
+    rest += 1 
 
 end
 
