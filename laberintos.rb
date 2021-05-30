@@ -19,8 +19,6 @@ class Node
     attr_reader :w1, :w2,:w3,:w4
 
     attr_reader :father , :distance , :explored
-    @@father = nil
-    @@distance = 1e9
     
 =begin
     La clase toma como parametros un punto sobre el cual estableceremos un 
@@ -172,8 +170,13 @@ eliminar y la colorea automaticamente al color del background actual.
     end
 
 
-    def explored=(x)
-        @explored
+    def explored(x)
+        @explored = x
+    end
+
+
+    def stat
+        @explored        
     end
 
 
@@ -184,7 +187,7 @@ eliminar y la colorea automaticamente al color del background actual.
     def distance=(d)
         @distance
     end
-    
+
 
     def numwalls
         n = 0
@@ -215,6 +218,9 @@ eliminar y la colorea automaticamente al color del background actual.
         @w4 = true
         @visited = 1
         @center.size = 1
+        @father = nil
+        @distance = Float::INFINITY
+        @explored = 1
     end
 
     def show_node
@@ -450,6 +456,7 @@ update do
 
         
         if randwall == 1 then
+
             if (top[0]-1 != 0  and top[0]-1 > 0 ) and grid[top[0]-1][top[1]].status != 3 then
                 grid[top[0]][top[1]].deletewall(1)
                 stack << [top[0]-1, top[1]]
@@ -458,6 +465,7 @@ update do
                     grid[top[0]-1][top[1]].deletewall(3)
                 end
             else 
+
                 while randwall == 1
                     randwall = rand(4) +1
                 end
@@ -1256,7 +1264,7 @@ update do
         end
 
         grid[top[0]][top[1]].visited(3)
-        grid[top[0]][top[1]].center.size += 1
+        #grid[top[0]][top[1]].center.size += 1
 
 
         if stack.length == 0 then 
@@ -1277,7 +1285,15 @@ end
 
 rest = 0
 
+start = [0,0]
 
+
+
+debug = Text.new(
+    'Current Queue : ',x: 50,
+    y: 700, size: 10, color: 'black',
+    z: 10 
+)
 on :key_down do |event|
 
     
@@ -1332,7 +1348,9 @@ on :key_down do |event|
         
                 
                 if randwall == 1 then
+                    
                     if (top[0]-1 != 0  and top[0]-1 > 0 ) and grid[top[0]-1][top[1]].status != 3 then
+                        
                         grid[top[0]][top[1]].deletewall(1)
                         stack << [top[0]-1, top[1]]
                         grid[top[0]-1][top[1]].visited(2)
@@ -2138,9 +2156,8 @@ on :key_down do |event|
                 end
         
                 grid[top[0]][top[1]].visited(3)
-                grid[top[0]][top[1]].center.size += 1
-        
-        
+                #grid[top[0]][top[1]].center.size += 1
+                
                 if stack.length == 0 then 
                     genlab = 0
                 end
@@ -2156,12 +2173,80 @@ on :key_down do |event|
         end
     end
 
-
-
     #Implemetacion de algoritmos para solucionar el laberinto
 
     #BFS
     if event.key == 'b'
+        
+        s = []
+
+        s.unshift start
+
+        grid[start[0]][start[1]].explored(2)
+        grid[start[0]][start[1]].distance = 0
+
+        e = false
+        update do
+            
+            if e == false
+                current = s.pop
+                
+                if current[0]-1 >= 0 and grid[current[0]-1][current[1]].stat == 1 and (grid[current[0]][current[1]].w1 == false or grid[current[0]-1][current[1]].w3 == false)
+                    grid[current[0]-1][current[1]].father = current
+                    grid[current[0]-1][current[1]].distance = grid[current[0]][current[1]].distance+1 
+                    grid[current[0]-1][current[1]].explored(2)
+                    if grid[current[0]-1][current[1]].center.size <= 4
+                        grid[current[0]-1][current[1]].center.size += 2
+                    end
+                    s.unshift [current[0]-1,current[1]]
+                end
+
+                if current[1]+1 < COLUMNS and grid[current[0]][current[1]+1].stat == 1 and (grid[current[0]][current[1]].w2 == false or grid[current[0]][current[1]+1].w4 == false)
+                    grid[current[0]][current[1]+1].father = current
+                    grid[current[0]][current[1]+1].distance = grid[current[0]][current[1]].distance+1
+                    grid[current[0]][current[1]+1].explored(2)
+                    
+                    if grid[current[0]][current[1]+1].center.size <= 4
+                        grid[current[0]][current[1]+1].center.size += 2
+                    end 
+                    
+                    s.unshift [current[0],current[1]+1]
+                end
+
+
+                if current[0]+1 < ROWS and grid[current[0]+1][current[1]].stat == 1  and (grid[current[0]][current[1]].w3 == false or grid[current[0]+1][current[1]].w1 == false)
+                    grid[current[0]+1][current[1]].father = current
+                    grid[current[0]+1][current[1]].distance = grid[current[0]][current[1]].distance+1
+                    grid[current[0]+1][current[1]].explored(2)
+                    if grid[current[0]+1][current[1]].center.size <= 4
+                        grid[current[0]+1][current[1]].center.size += 2
+                    end 
+                    
+                    s.unshift [current[0]+1,current[1]]
+                end
+
+                if current[1]-1 >= 0 and grid[current[0]][current[1]-1].stat == 1  and (grid[current[0]][current[1]].w4 == false or grid[current[0]][current[1]-1].w2 == false)
+                    grid[current[0]][current[1]-1].father = current
+                    grid[current[0]][current[1]-1].distance = grid[current[0]][current[1]].distance+1
+                    grid[current[0]][current[1]-1].explored(2)
+                    if grid[current[0]][current[1]-1].center.size <= 4
+                        grid[current[0]][current[1]-1].center.size += 2
+                    end
+
+                    s.unshift [current[0],current[1]-1]
+                end
+
+                grid[current[0]][current[1]].explored(3)
+                
+                sleep 0.1
+                debug.text  = s
+                if s.length == 0
+                    e = true
+                end 
+            end
+            
+        end
+
         
     end
 
