@@ -181,11 +181,11 @@ eliminar y la colorea automaticamente al color del background actual.
 
 
     def father=(f)
-        @father
+        @father = f
     end
 
     def distance=(d)
-        @distance
+        @distance = d
     end
 
 
@@ -430,9 +430,9 @@ j = 0
 
 stack = []
 
-genlab = 1
+#genlab = 1
 
-stack << [0,0]
+#stack << [0,0]
 =begin
     Generamos un laberinto de  manera  aleatoria  tomando  como punto de  partida el  espacio [0,0]
     posteriormente con introducimos  dicho elemento a una pila (Stack) y con ayuda del  update loop
@@ -442,7 +442,7 @@ stack << [0,0]
     proceso hasta que no podamos escoger ninguna de las 4 paredes,entoces hacemos pop a la pila que 
     ha estado almacenando las posiciones hasta encontrar alguna en la que se pueda eliminar alguna 
     de las 4 paredes. Este proceso termina cuando la pila se queda vacia.
-=end
+
 update do
     
     if genlab == 1 then
@@ -659,7 +659,7 @@ update do
         #CORREGIDO XD
 
         
-        #Te amo liza flores <3(si leees esto casate conmigo :3)
+        #Te amo liza flores <<33(si leees esto casate conmigo :3)
         
 
         if randwall == 2 then
@@ -1281,12 +1281,12 @@ update do
 
 end
 
-
+=end
 
 rest = 0
 
 start = [0,0]
-
+end_path = [29, 29]
 
 
 debug = Text.new(
@@ -1349,8 +1349,7 @@ on :key_down do |event|
                 
                 if randwall == 1 then
                     
-                    if (top[0]-1 != 0  and top[0]-1 > 0 ) and grid[top[0]-1][top[1]].status != 3 then
-                        
+                    if (top[0]-1 > 0  and top[0] != 0 ) and grid[top[0]-1][top[1]].status != 3 then
                         grid[top[0]][top[1]].deletewall(1)
                         stack << [top[0]-1, top[1]]
                         grid[top[0]-1][top[1]].visited(2)
@@ -1363,6 +1362,7 @@ on :key_down do |event|
                         end
         
                         if randwall == 2 then
+
                             if( top[1]+1 < COLUMNS and top[1] != COLUMNS-1 ) and grid[top[0]][top[1]+1].status != 3 then
                                 grid[top[0]][top[1]].deletewall(2)
                                 stack << [top[0], top[1]+1]
@@ -1382,7 +1382,7 @@ on :key_down do |event|
                                             grid[top[0]+1][top[1]].deletewall(1)
                                         end
                                     else
-                                        if (top[1]-1 >= 0 and top[1] != 0 ) and grid[top[0]][top[1]-1].status != 3 then
+                                        if (top[1]-1 > 0 and top[1] != 0 ) and grid[top[0]][top[1]-1].status != 3 then
                                             grid[top[0]][top[1]].deletewall(4)
                                             stack << [top[0], top[1]-1]
                                             grid[top[0]][top[1]-1].visited(2)
@@ -1396,7 +1396,7 @@ on :key_down do |event|
                                 end
         
                                 if randwall == 4 then
-                                    if  (top[1]-1 >= 0 and top[1] != 0 )and grid[top[0]][top[1]-1].status != 3 then
+                                    if  (top[1]-1 > 0 and top[1] != 0 )and grid[top[0]][top[1]-1].status != 3 then
                                         grid[top[0]][top[1]].deletewall(4)
                                         stack << [top[0], top[1]-1]
                                         grid[top[0]][top[1]-1].visited(2)
@@ -1444,7 +1444,7 @@ on :key_down do |event|
                                             grid[top[0]][top[1]+1].deletewall(4)
                                         end
                                     else
-                                        if (top[1]-1 >= 0 and top[1] != 0 ) and grid[top[0]][top[1]-1].status != 3 then
+                                        if (top[1]-1 > 0 and top[1] != 0 ) and grid[top[0]][top[1]-1].status != 3 then
                                             grid[top[0]][top[1]].deletewall(4)
                                             stack << [top[0], top[1]-1]
                                             grid[top[0]][top[1]-1].visited(2)
@@ -1455,7 +1455,7 @@ on :key_down do |event|
                                 end
         
                                 if randwall == 4 then
-                                    if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
+                                    if (top[1]-1 > 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
                                         grid[top[0]][top[1]].deletewall(4)
                                         stack << [top[0], top[1]-1]
                                         grid[top[0]][top[1]-1].visited(2)
@@ -1484,7 +1484,7 @@ on :key_down do |event|
         
         
                         if randwall == 4 then
-                            if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
+                            if (top[1]-1 > 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
                                 grid[top[0]][top[1]].deletewall(4)
                                 stack << [top[0], top[1]-1]
                                 grid[top[0]][top[1]-1].visited(2)
@@ -1548,13 +1548,14 @@ on :key_down do |event|
         
                     end
                 end
-                #CORREGIDO XD
+                #CORREGIDO XDD
         
                 
                 #Te amo liza flores <3(si leees esto casate conmigo :3)
                 
         
                 if randwall == 2 then
+
                     if (top[1] + 1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
                         grid[top[0]][top[1]].deletewall(2)
                         stack << [top[0], top[1]+1]
@@ -1641,7 +1642,7 @@ on :key_down do |event|
                                 ns = [1,4]
                                 randwall = ns[rand(2)]
                                 if randwall == 1 then
-                                    if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
+                                    if (top[0]-1 > 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
                                         grid[top[0]][top[1]].deletewall(1)
                                         stack << [top[0]-1, top[1]]
                                         grid[top[0]-1][top[1]].visited(2)
@@ -1663,7 +1664,7 @@ on :key_down do |event|
                                 end
         
                                 if randwall == 4 then
-                                    if (top[1]-1 >= 0 and top[0] != 0) and grid[top[0]][top[1]-1].status != 3 then
+                                    if (top[1]-1 > 0 and top[0] != 0) and grid[top[0]][top[1]-1].status != 3 then
                                         grid[top[0]][top[1]].deletewall(4)
                                         stack << [top[0], top[1]-1]
                                         grid[top[0]][top[1]-1].visited(2)
@@ -1671,10 +1672,13 @@ on :key_down do |event|
                                             grid[top[0]][top[1]-1].deletewall(2)
                                         end
                                     else
-                                        if (top[0]-1 >= 0  and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
+                                        if (top[0]-1 > 0  and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
                                             grid[top[0]][top[1]].deletewall(1)
                                             stack << [top[0]-1, top[1]]
                                             grid[top[0]-1][top[1]].visited(2)
+                                            if top[0]-1 > 0
+                                                grid[top[0]-1][top[1]].deletewall(3)
+                                            end
                                         else
                                             stack.pop
                                         end
@@ -1689,10 +1693,14 @@ on :key_down do |event|
         
         
                         if randwall == 4 then
-                            if( top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
+                            if( top[1]-1 > 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
                                 grid[top[0]][top[1]].deletewall(4)
                                 stack << [top[0], top[1]-1]
                                 grid[top[0]][top[1]-1].visited(2)
+                                if top[1]-1 > 0
+                                    grid[top[0]][top[1]-1].deletewall(2)
+                                end
+
                             else
                                 ns = [3,1]
                                 randwall = ns[rand(2)]
@@ -1748,7 +1756,7 @@ on :key_down do |event|
         
                     end
                 end
-                #Corregido XD
+                #Corregido XDD
                 
                 if randwall == 3 then
                     if (top[0] + 1 < ROWS and top[0]  != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
@@ -1797,7 +1805,7 @@ on :key_down do |event|
                                 end
         
                                 if randwall == 4 then
-                                    if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
+                                    if (top[1]-1 > 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
                                         grid[top[0]][top[1]].deletewall(4)
                                         stack << [top[0], top[1]-1]
                                         grid[top[0]][top[1]-1].visited(2)
@@ -1805,7 +1813,7 @@ on :key_down do |event|
                                             grid[top[0]][top[1]-1].deletewall(2)
                                         end
                                     else
-                                        if (top[0]-1 >= 0 and top[0] != 0)and grid[top[0]-1][top[1]].status != 3 then
+                                        if (top[0]-1 > 0 and top[0] != 0)and grid[top[0]-1][top[1]].status != 3 then
                                             grid[top[0]][top[1]].deletewall(1)
                                             stack << [top[0]-1, top[1]]
                                             grid[top[0]-1][top[1]].visited(2)
@@ -1889,7 +1897,7 @@ on :key_down do |event|
         
                         if randwall == 4 then
         
-                            if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
+                            if (top[1]-1 > 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
                                 grid[top[0]][top[1]].deletewall(4)
                                 stack << [top[0], top[1]-1]
                                 grid[top[0]][top[1]-1].visited(2)
@@ -1900,7 +1908,7 @@ on :key_down do |event|
                                 ns = [1,2]
                                 randwall = ns[rand(2)]
                                 if randwall == 1 then
-                                    if( top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
+                                    if( top[0]-1 > 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
                                         grid[top[0]][top[1]].deletewall(1)
                                         stack << [top[0]-1, top[1]]
                                         grid[top[0]-1][top[1]].visited(2)
@@ -1951,10 +1959,10 @@ on :key_down do |event|
         
                     end
                 end
-                #Corregido XD
+                #Corregido XDD
         
                 if randwall == 4 then
-                    if (top[1] -1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
+                    if (top[1] -1 > 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
                         grid[top[0]][top[1]].deletewall(4)
                         stack << [top[0], top[1]-1]
                         grid[top[0]][top[1]-1].visited(2)
@@ -1987,7 +1995,7 @@ on :key_down do |event|
                                             grid[top[0]+1][top[1]].deletewall(1)
                                         end
                                     else
-                                        if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
+                                        if (top[0]-1 > 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
                                             grid[top[0]][top[1]].deletewall(1)
                                             stack << [top[0]-1, top[1]]
                                             grid[top[0]-1][top[1]].visited(2)
@@ -2001,7 +2009,7 @@ on :key_down do |event|
                                 end
         
                                 if randwall == 1 then
-                                    if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
+                                    if (top[0]-1 > 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
                                         grid[top[0]][top[1]].deletewall(1)
                                         stack << [top[0]-1, top[1]]
                                         grid[top[0]-1][top[1]].visited(2)
@@ -2049,7 +2057,7 @@ on :key_down do |event|
                                             grid[top[0]][top[1]+1].deletewall(4)
                                         end
                                     else
-                                        if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
+                                        if (top[0]-1 > 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
                                             grid[top[0]][top[1]].deletewall(1)
                                             stack << [top[0]-1, top[1]]
                                             grid[top[0]-1][top[1]].visited(2)
@@ -2173,6 +2181,657 @@ on :key_down do |event|
         end
     end
 
+
+
+
+    if event.key == 'k'
+        tab.gen_alg.text = 'Generation Algorithm: 2'
+        tab.status.text = 'Generating Maze'
+        tab.status.color = 'lime'
+        genlab = 1
+        stack = []
+        stack << [0,0]
+
+
+        update do
+            
+            if genlab == 1
+                current = stack[-1]
+
+                randw = rand(4)+1
+
+                if randw == 1
+                    if current[0] != 0 and grid[current[0]-1][current[1]].status == 1 then
+                        grid[current[0]][current[1]].deletewall(1)
+                        grid[current[0]-1][current[1]].deletewall(3)
+                        grid[current[0]-1][current[1]].visited(2)
+                        stack << [current[0]-1,current[1]]
+                    else  
+                        w = [2,3,4]
+                        randw = w[rand(3)]
+                    
+                    
+                        if randw == 2
+                            if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1 then
+                                grid[current[0]][current[1]].deletewall(2)
+                                grid[current[0]][current[1]+1].deletewall(4)
+                                grid[current[0]][current[1]+1].visited(2)
+                                stack << [current[0],current[1]+1]
+                            else
+                                w = [3,4]
+                                randw = w[rand(2)]
+                                if randw == 3
+                                    if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1 then
+                                        grid[current[0]][current[1]].deletewall(3)
+                                        grid[current[0]+1][current[1]].deletewall(1)
+                                        grid[current[0]+1][current[1]].visited(2)
+                                        stack << [current[0]+1, current[1]]
+                                    else
+                                        if current[1] != 0 and grid[current[0]][current[1]-1].status == 1 then
+                                            grid[current[0]][current[1]].deletewall(4)
+                                            grid[current[0]][current[1]-1].deletewall(2)
+                                            grid[current[0]][current[1]-1].visited(2)
+                                            stack << [current[0], current[1]-1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+
+                                else
+                                    if current[1] != 0 and grid[current[0]][current[1]-1].status == 1 then
+                                        grid[current[0]][current[1]].deletewall(4)
+                                        grid[current[0]][current[1]-1].deletewall(2)
+                                        grid[current[0]][current[1]-1].visited(2)
+                                        stack << [current[0], current[1]-1]
+                                    else
+                                        if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1 then
+                                            grid[current[0]][current[1]].deletewall(3)
+                                            grid[current[0]+1][current[1]].deletewall(1)
+                                            grid[current[0]+1][current[1]].visited(2)
+                                            stack << [current[0]+1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                
+                                end
+
+                            
+                            end 
+                        end
+
+
+                        if randw == 3
+                            if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1 then
+                                grid[current[0]][current[1]].deletewall(3)
+                                grid[current[0]+1][current[1]].deletewall(1)
+                                grid[current[0]+1][current[1]].visited(2)
+                                stack << [current[0]+1,current[1]]
+                            else
+                                w = [2,4]
+                                randw = w[rand(2)]
+                                if randw == 2
+                                    if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1 then
+                                        grid[current[0]][current[1]].deletewall(2)
+                                        grid[current[0]][current[1]+1].deletewall(4)
+                                        grid[current[0]][current[1]+1].visited(2)
+                                        stack << [current[0], current[1]+1]
+                                    else
+                                        if current[1] != 0 and grid[current[0]][current[1]-1].status == 1 then
+                                            grid[current[0]][current[1]].deletewall(4)
+                                            grid[current[0]][current[1]-1].deletewall(2)
+                                            grid[current[0]][current[1]-1].visited(2)
+                                            stack << [current[0], current[1]-1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+
+                                else
+                                    if current[1] != 0 and grid[current[0]][current[1]-1].status == 1 then
+                                        grid[current[0]][current[1]].deletewall(4)
+                                        grid[current[0]][current[1]-1].deletewall(2)
+                                        grid[current[0]][current[1]-1].visited(2)
+                                        stack << [current[0], current[1]-1]
+                                    else
+                                        if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1 then
+                                            grid[current[0]][current[1]].deletewall(2)
+                                            grid[current[0]][current[1]+1].deletewall(4)
+                                            grid[current[0]][current[1]+1].visited(2)
+                                            stack << [current[0], current[1]+1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                
+                                end
+
+
+
+                            
+                            end 
+                        end
+
+
+                        if randw == 4
+                            if current[1] != 0 and grid[current[0]][current[1]-1].status == 1 then
+                                grid[current[0]][current[1]].deletewall(4)
+                                grid[current[0]][current[1]-1].deletewall(2)
+                                grid[current[0]][current[1]-1].visited(2)
+                                stack << [current[0],current[1]-1]
+                            else
+                                w = [3,2]
+                                randw = w[rand(2)]
+                                if randw == 3
+                                    if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1 then
+                                        grid[current[0]][current[1]].deletewall(3)
+                                        grid[current[0]+1][current[1]].deletewall(1)
+                                        grid[current[0]+1][current[1]].visited(2)
+                                        stack << [current[0]+1, current[1]]
+                                    else
+                                        if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1 then
+                                            grid[current[0]][current[1]].deletewall(2)
+                                            grid[current[0]][current[1]+1].deletewall(4)
+                                            grid[current[0]][current[1]+1].visited(2)
+                                            stack << [current[0], current[1]+1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+
+                                else
+                                    if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1 then
+                                        grid[current[0]][current[1]].deletewall(2)
+                                        grid[current[0]][current[1]+1].deletewall(4)
+                                        grid[current[0]][current[1]+1].visited(2)
+                                        stack << [current[0], current[1]+1]
+                                    else
+                                        if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1 then
+                                            grid[current[0]][current[1]].deletewall(3)
+                                            grid[current[0]+1][current[1]].deletewall(1)
+                                            grid[current[0]+1][current[1]].visited(2)
+                                            stack << [current[0]+1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                
+                                end
+                            end 
+                        end
+                    end
+
+                end
+                
+                if randw == 2
+                    if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                        grid[current[0]][current[1]].deletewall(2)
+                        grid[current[0]][current[1]+1].deletewall(4)
+                        grid[current[0]][current[1]+1].visited(2)
+                        stack << [current[0], current[1]+1]
+                    else
+                        w = [1,3,4]
+                        randw = w[rand(3)]
+                        if randw == 1
+                            if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                grid[current[0]][current[1]].deletewall(1)
+                                grid[current[0]-1][current[1]].deletewall(3)
+                                grid[current[0]-1][current[1]].visited(2)
+                                stack << [current[0]-1, current[1]]
+                            else
+                                w = [3,4]
+                                randw = w[rand(2)]
+                                if randw == 3
+                                    if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(3)
+                                        grid[current[0]+1][current[1]].deletewall(1)
+                                        grid[current[0]+1][current[1]].visited(2)
+                                        stack << [current[0]+1,current[1]]
+                                    else
+                                        if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                            grid[current[0]][current[1]].deletewall(4)
+                                            grid[current[0]][current[1]-1].deletewall(2)
+                                            grid[current[0]][current[1]-1].visited(2)
+                                            stack << [current[0], current[1]-1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                else
+                                    if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                        grid[current[0]][current[1]].deletewall(4)
+                                        grid[current[0]][current[1]-1].deletewall(2)
+                                        grid[current[0]][current[1]-1].visited(2)
+                                        stack << [current[0],current[1]-1]
+                                    else
+                                        if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(3)
+                                            grid[current[0]+1][current[1]].deletewall(1)
+                                            grid[current[0]+1][current[1]].visited(2)
+                                            stack << [current[0]+1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                end
+                                
+                            end
+                        end
+
+                        if randw == 3
+                            if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                                grid[current[0]][current[1]].deletewall(3)
+                                grid[current[0]+1][current[1]].deletewall(1)
+                                grid[current[0]+1][current[1]].visited(2)
+                                stack << [current[0]+1, current[1]]
+                            else
+                                w = [1,4]
+                                randw = w[rand(2)]
+                                if randw == 1
+                                    if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(1)
+                                        grid[current[0]-1][current[1]].deletewall(3)
+                                        grid[current[0]-1][current[1]].visited(2)
+                                        stack << [current[0]-1,current[1]]
+                                    else
+                                        if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                            grid[current[0]][current[1]].deletewall(4)
+                                            grid[current[0]][current[1]-1].deletewall(2)
+                                            grid[current[0]][current[1]-1].visited(2)
+                                            stack << [current[0], current[1]-1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                else
+                                    if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                        grid[current[0]][current[1]].deletewall(4)
+                                        grid[current[0]][current[1]-1].deletewall(2)
+                                        grid[current[0]][current[1]-1].visited(2)
+                                        stack << [current[0],current[1]-1]
+                                    else
+                                        if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(1)
+                                            grid[current[0]-1][current[1]].deletewall(3)
+                                            grid[current[0]-1][current[1]].visited(2)
+                                            stack << [current[0]-1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                end
+                                
+                            end
+                        end
+
+                        if randw == 4
+                            if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                grid[current[0]][current[1]].deletewall(4)
+                                grid[current[0]][current[1]-1].deletewall(2)
+                                grid[current[0]][current[1]-1].visited(2)
+                                stack << [current[0], current[1]-1]
+                            else
+                                w = [3,1]
+                                randw = w[rand(2)]
+                                if randw == 3
+                                    if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(3)
+                                        grid[current[0]+1][current[1]].deletewall(1)
+                                        grid[current[0]+1][current[1]].visited(2)
+                                        stack << [current[0]+1,current[1]]
+                                    else
+                                        if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(1)
+                                            grid[current[0]-1][current[1]].deletewall(3)
+                                            grid[current[0]-1][current[1]].visited(2)
+                                            stack << [current[0]-1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                else
+                                    if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(1)
+                                        grid[current[0]-1][current[1]].deletewall(3)
+                                        grid[current[0]-1][current[1]].visited(2)
+                                        stack << [current[0]-1,current[1]]
+                                    else
+                                        if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(3)
+                                            grid[current[0]+1][current[1]].deletewall(1)
+                                            grid[current[0]+1][current[1]].visited(2)
+                                            stack << [current[0]+1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                end
+                                
+                            end
+                        end
+
+                    end
+                end
+
+                if randw == 3
+                    if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                        grid[current[0]][current[1]].deletewall(3)
+                        grid[current[0]+1][current[1]].deletewall(1)
+                        grid[current[0]+1][current[1]].visited(2)
+                        stack << [current[0]+1, current[1]]
+                    else
+                        w = [1,2,4]
+                        randw = w[rand(3)]
+
+                        if randw == 1
+                            if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                grid[current[0]][current[1]].deletewall(1)
+                                grid[current[0]-1][current[1]].deletewall(3)
+                                grid[current[0]-1][current[1]].visited(2)
+                                stack << [current[0]-1, current[1]]
+                            else
+                                w = [2,4]
+                                randw = w[rand(2)]
+
+                                if randw == 2
+                                    if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                        grid[current[0]][current[1]].deletewall(2)
+                                        grid[current[0]][current[1]+1].deletewall(4)
+                                        grid[current[0]][current[1]+1].visited(2)
+                                        stack << [current[0],current[1]+1]
+                                    else
+                                        if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                            grid[current[0]][current[1]].deletewall(4)
+                                            grid[current[0]][current[1]-1].deletewall(2)
+                                            grid[current[0]][current[1]-1].visited(2)
+                                            stack << [current[0], current[1]-1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                else
+                                    if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                        grid[current[0]][current[1]].deletewall(4)
+                                        grid[current[0]][current[1]-1].deletewall(2)
+                                        grid[current[0]][current[1]-1].visited(2)
+                                        stack << [current[0],current[1]-1]
+                                    else
+                                        if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                            grid[current[0]][current[1]].deletewall(2)
+                                            grid[current[0]][current[1]+1].deletewall(4)
+                                            grid[current[0]][current[1]+1].visited(2)
+                                            stack << [current[0], current[1]+1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                end
+                            end
+                        end
+
+                        if randw == 2
+                            if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                grid[current[0]][current[1]].deletewall(2)
+                                grid[current[0]][current[1]+1].deletewall(4)
+                                grid[current[0]][current[1]+1].visited(2)
+                                stack << [current[0], current[1]+1]
+                            else
+                                w = [1,4]
+                                randw = w[rand(2)]
+
+                                if randw == 1
+                                    if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(1)
+                                        grid[current[0]-1][current[1]].deletewall(3)
+                                        grid[current[0]-1][current[1]].visited(2)
+                                        stack << [current[0]-1,current[1]]
+                                    else
+                                        if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                            grid[current[0]][current[1]].deletewall(4)
+                                            grid[current[0]][current[1]-1].deletewall(2)
+                                            grid[current[0]][current[1]-1].visited(2)
+                                            stack << [current[0], current[1]-1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                else
+                                    if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                        grid[current[0]][current[1]].deletewall(4)
+                                        grid[current[0]][current[1]-1].deletewall(2)
+                                        grid[current[0]][current[1]-1].visited(2)
+                                        stack << [current[0],current[1]-1]
+                                    else
+                                        if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(1)
+                                            grid[current[0]-1][current[1]].deletewall(3)
+                                            grid[current[0]-1][current[1]].visited(2)
+                                            stack << [current[0]-1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                end
+                            end
+                        end
+
+                        if randw == 4
+                            if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                                grid[current[0]][current[1]].deletewall(4)
+                                grid[current[0]][current[1]-1].deletewall(2)
+                                grid[current[0]][current[1]-1].visited(2)
+                                stack << [current[0], current[1]-1]
+                            else
+                                w = [2,1]
+                                randw = w[rand(2)]
+
+                                if randw == 2
+                                    if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                        grid[current[0]][current[1]].deletewall(2)
+                                        grid[current[0]][current[1]+1].deletewall(4)
+                                        grid[current[0]][current[1]+1].visited(2)
+                                        stack << [current[0],current[1]+1]
+                                    else
+                                        if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(1)
+                                            grid[current[0]-1][current[1]].deletewall(3)
+                                            grid[current[0]-1][current[1]].visited(2)
+                                            stack << [current[0]-1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                else
+                                    if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(1)
+                                        grid[current[0]-1][current[1]].deletewall(3)
+                                        grid[current[0]-1][current[1]].visited(2)
+                                        stack << [current[0]-1,current[1]]
+                                    else
+                                        if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                            grid[current[0]][current[1]].deletewall(2)
+                                            grid[current[0]][current[1]+1].deletewall(4)
+                                            grid[current[0]][current[1]+1].visited(2)
+                                            stack << [current[0], current[1]+1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                end
+                            end
+                        end
+
+                    end
+                end
+
+                if randw == 4
+                    if current[1] != 0 and grid[current[0]][current[1]-1].status == 1
+                        grid[current[0]][current[1]].deletewall(4)
+                        grid[current[0]][current[1]-1].deletewall(2)
+                        grid[current[0]][current[1]-1].visited(2)
+                        stack << [current[0],current[1]-1]
+                    else
+                        w = [1,2,3]
+                        randw = w[rand(3)]
+
+                        if randw == 1
+                            if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                grid[current[0]][current[1]].deletewall(1)
+                                grid[current[0]-1][current[1]].deletewall(3)
+                                grid[current[0]-1][current[1]].visited(2)
+                                stack << [current[0]-1, current[1]]
+                            else
+                                w = [2,3]
+                                randw = w[rand(2)]
+
+                                if randw == 2
+                                    if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                        grid[current[0]][current[1]].deletewall(2)
+                                        grid[current[0]][current[1]+1].deletewall(4)
+                                        grid[current[0]][current[1]+1].visited(2)
+                                        stack << [current[0], current[1]+1]
+                                    else
+                                        if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(3)
+                                            grid[current[0]+1][current[1]].deletewall(1)
+                                            grid[current[0]+1][current[1]].visited(2)
+                                            stack << [current[0]+1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                else
+                                    if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(3)
+                                        grid[current[0]+1][current[1]].deletewall(1)
+                                        grid[current[0]+1][current[1]].visited(2)
+                                        stack << [current[0]+1, current[1]]
+                                    else
+                                        if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                            grid[current[0]][current[1]].deletewall(2)
+                                            grid[current[0]][current[1]+1].deletewall(4)
+                                            grid[current[0]][current[1]+1].visited(2)
+                                            stack << [current[0], current[1]+1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                end
+                            end
+                        end
+
+
+                        if randw == 2
+                            if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                grid[current[0]][current[1]].deletewall(2)
+                                grid[current[0]][current[1]+1].deletewall(4)
+                                grid[current[0]][current[1]+1].visited(2)
+                                stack << [current[0], current[1]+1]
+                            else
+                                w = [1,3]
+                                randw = w[rand(2)]
+
+                                if randw == 1
+                                    if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(1)
+                                        grid[current[0]-1][current[1]].deletewall(3)
+                                        grid[current[0]-1][current[1]].visited(2)
+                                        stack << [current[0]-1, current[1]]
+                                    else
+                                        if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(3)
+                                            grid[current[0]+1][current[1]].deletewall(1)
+                                            grid[current[0]+1][current[1]].visited(2)
+                                            stack << [current[0]+1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                else
+                                    if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(3)
+                                        grid[current[0]+1][current[1]].deletewall(1)
+                                        grid[current[0]+1][current[1]].visited(2)
+                                        stack << [current[0]+1, current[1]]
+                                    else
+                                        if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(1)
+                                            grid[current[0]-1][current[1]].deletewall(3)
+                                            grid[current[0]-1][current[1]].visited(2)
+                                            stack << [current[0]-1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                end
+                            end
+                        end
+
+                        if randw == 3
+                            if current[0] != ROWS-1 and grid[current[0]+1][current[1]].status
+                                grid[current[0]][current[1]].deletewall(3)
+                                grid[current[0]+1][current[1]].deletewall(1)
+                                grid[current[0]+1][current[1]].visited(2)
+                                stack << [current[0]+1, current[1]]
+                            else
+                                w = [2,1]
+                                randw = w[rand(2)]
+
+                                if randw == 2
+                                    if current[1] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                        grid[current[0]][current[1]].deletewall(2)
+                                        grid[current[0]][current[1]+1].deletewall(4)
+                                        grid[current[0]][current[1]+1].visited(2)
+                                        stack << [current[0], current[1]+1]
+                                    else
+                                        if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                            grid[current[0]][current[1]].deletewall(1)
+                                            grid[current[0]-1][current[1]].deletewall(3)
+                                            grid[current[0]-1][current[1]].visited(2)
+                                            stack << [current[0]-1, current[1]]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                else
+                                    if current[0] != 0 and grid[current[0]-1][current[1]].status == 1
+                                        grid[current[0]][current[1]].deletewall(1)
+                                        grid[current[0]-1][current[1]].deletewall(3)
+                                        grid[current[0]-1][current[1]].visited(2)
+                                        stack << [current[0]-1, current[1]]
+                                    else
+                                        if current[0] != COLUMNS-1 and grid[current[0]][current[1]+1].status == 1
+                                            grid[current[0]][current[1]].deletewall(2)
+                                            grid[current[0]][current[1]+1].deletewall(4)
+                                            grid[current[0]][current[1]+1].visited(2)
+                                            stack << [current[0], current[1]+1]
+                                        else
+                                            stack.pop
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                        
+                    end
+                end
+
+                if stack.length == 0
+                    genlab = 0
+                end
+
+            end
+            
+            if genlab == 0  
+                tab.status.text = 'Maze Generated'
+                tab.status.color = 'olive'
+            end
+        end
+
+
+
+    end
+
     #Implemetacion de algoritmos para solucionar el laberinto
 
     #BFS
@@ -2191,7 +2850,7 @@ on :key_down do |event|
             if e == false
                 current = s.pop
                 
-                if current[0]-1 >= 0 and grid[current[0]-1][current[1]].stat == 1 and (grid[current[0]][current[1]].w1 == false or grid[current[0]-1][current[1]].w3 == false)
+                if current[0]-1 >= 0 and grid[current[0]-1][current[1]].stat == 1 and (grid[current[0]][current[1]].w1 == false and grid[current[0]-1][current[1]].w3 == false)
                     grid[current[0]-1][current[1]].father = current
                     grid[current[0]-1][current[1]].distance = grid[current[0]][current[1]].distance+1 
                     grid[current[0]-1][current[1]].explored(2)
@@ -2201,7 +2860,7 @@ on :key_down do |event|
                     s.unshift [current[0]-1,current[1]]
                 end
 
-                if current[1]+1 < COLUMNS and grid[current[0]][current[1]+1].stat == 1 and (grid[current[0]][current[1]].w2 == false or grid[current[0]][current[1]+1].w4 == false)
+                if current[1]+1 < COLUMNS and grid[current[0]][current[1]+1].stat == 1 and (grid[current[0]][current[1]].w2 == false and grid[current[0]][current[1]+1].w4 == false)
                     grid[current[0]][current[1]+1].father = current
                     grid[current[0]][current[1]+1].distance = grid[current[0]][current[1]].distance+1
                     grid[current[0]][current[1]+1].explored(2)
@@ -2240,9 +2899,19 @@ on :key_down do |event|
                 
                 sleep 0.1
                 debug.text  = s
-                if s.length == 0
+                if s.length == 0 or (current[0] == end_path[0] and current[1] == end_path[1])
                     e = true
                 end 
+            end
+
+
+            if e == true 
+                if end_path != nil and grid[end_path[0]][end_path[1]].stat == 3 and end_path != start
+                    grid[end_path[0]][end_path[1]].center.size = 5
+                    grid[end_path[0]][end_path[1]].center.color = 'red'
+                    end_path = grid[end_path[0]][end_path[1]].father
+                end
+                
             end
             
         end
