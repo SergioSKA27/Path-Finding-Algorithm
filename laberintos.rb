@@ -16,7 +16,8 @@ sleep 1
 class Node
     attr_reader :x_pos , :y_pos, :color, :sqr, :size , :center
     attr_reader :wall1, :wall2, :wall3, :wall4, :visited
-    attr_reader :w1, :w2,:w3,:w4
+    attr_reader :w1, :w2,:w3,:w4, :relleno
+
 
     attr_reader :father , :distance , :explored
     
@@ -39,28 +40,28 @@ class Node
         @wall1 = Line.new(
             x1: x-10 , y1:y-10,
             x2: x+20 , y2:y-10,
-            color: color, width: 4
+            color: color, width: 4, z: 10
         )
         @w1 = true
         #Pared derecha
         @wall2 = Line.new(
             x1: x+20 , y1:y-8,
             x2: x+20 , y2:y+8,
-            color: color, width: 4
+            color: color, width: 4, z: 10
         )
         @w2 = true
         #Pared inferior
         @wall3 = Line.new(
             x1: x-10 , y1:y+10,
             x2: x+20 , y2:y+10,
-            color: color, width: 4
+            color: color, width: 4, z: 10
         )
         @w3 = true
         #Pared izquierda
         @wall4 = Line.new(
             x1: x-10 , y1:y-8,
             x2: x-10 , y2:y+8,
-            color: color, width: 4
+            color: color, width: 4, z: 10
         )
         @w4 = true
         #centro(relativamete :v)
@@ -68,6 +69,14 @@ class Node
             x: x , y: y, 
             color: 'blue' , size: size, 
             z: 5
+        )
+
+        @relleno = Quad.new(
+            x1: self.wall1.x2, y1: self.wall1.y1,
+            x2: self.wall1.x1, y2: self.wall1.y1,
+            x3:  self.wall3.x1, y3: self.wall3.y1,
+            x4: self.wall3.x2, y4: self.wall3.y1,
+            color: 'black', opacity: 1.0, z: 15
         )
 
         @visited = 1 #Para generar laberitos
@@ -108,6 +117,15 @@ class Node
         @wall4.color = x
         @w4 = false
     end
+
+
+    def in_node(x,y)
+        if x >= self.wall1.x1 and x <= self.wall1.x2 and y >= self.wall1.y1 and y <= self.wall3.y1
+            true
+        else
+            false
+        end
+    end
 =begin
 agiliza el proceso de eliminar una pared seleccionando la pared que queramos 
 eliminar y la colorea automaticamente al color del background actual.
@@ -124,6 +142,7 @@ eliminar y la colorea automaticamente al color del background actual.
         else 
             self.changewall4(x)
         end
+        self.relleno.opacity = 0.0
     end
 
     def w1 
@@ -216,11 +235,14 @@ eliminar y la colorea automaticamente al color del background actual.
         @w2 = true
         @w3 = true
         @w4 = true
+        @center.color = 'blue'
         @visited = 1
         @center.size = 1
         @father = nil
         @distance = Float::INFINITY
         @explored = 1
+        @relleno.opacity = 1.0
+        @relleno.color = 'black'
     end
 
     def show_node
@@ -230,12 +252,17 @@ eliminar y la colorea automaticamente al color del background actual.
         @center
     end
 
+
+
 end
 
 
 class Tablero
     attr_reader :status, :nodesE, :gridsz, :gen_alg
     attr_reader :wl1,:wl3,:wl2,:wl4,:wl5,:wl6, :wl7
+    attr_reader :wl8, :wl9, :wl10
+    attr_reader :solvedS, :startxt, :startV, :endtxt, :endV
+    attr_reader :lk1, :lk2
 
     def initialize(rows , coloums)
         @wl1 = Line.new(
@@ -277,6 +304,24 @@ class Tablero
             color:'black', z: 10
         )
 
+        @wl8 = Line.new(
+            x1: 950, y1: 200,
+            x2: 1250, y2: 200,
+            color: 'black', z: 10
+        )
+
+        @wl9 = Line.new(
+            x1: 950, y1: 175,
+            x2: 1250, y2: 175,
+            color: 'black', z: 10
+        )
+
+        @wl10 = Line.new(
+            x1: 1100, y1: 150,
+            x2: 1100, y2: 200, 
+            color: 'black', z: 10
+        )
+
 
         @gridsz = Text.new(
             'Grid size: ' + (rows.to_s + 'x' + coloums.to_s) , x: 960,
@@ -290,6 +335,40 @@ class Tablero
             color: 'black', z: 10
         )
 
+        @solvedS = Text.new(
+            '----', x:1110,
+            y: 125 ,size: 15 , z: 10,
+            color: 'black'
+        )
+
+
+        @startxt = Text.new(
+            'START', x: 960,
+            y: 155 ,size: 15 , z: 10,
+            color: 'black'
+        )
+
+        @startV = Text.new(
+            '0,0', x:1110,
+            y: 155 ,size: 15 , z: 10,
+            color: 'black'
+        )
+        @lk1 = false
+
+        @endtxt = Text.new(
+            'END', x:960,
+            y: 180 ,size: 15 , z: 10,
+            color: 'black'
+        )
+
+        @endV = Text.new(
+            '0,0', x:1110,
+            y: 180 ,size: 15 , z: 10,
+            color: 'black'
+        )
+        @lk2 = false
+
+
         @gen_alg =  Text.new(
             'Generation Algorithm: ' , x: 1102,
             y: 100, size:10, 
@@ -299,7 +378,47 @@ class Tablero
     end
 
 
+    def start_value
+        s = []
+        st = ''
+        for c in 0...self.startV.text.length do
+            if self.startV.text[c] != ',' and  self.startV.text[c].respond_to?('to_i') 
+                st +=  self.startV.text[c]
+            else
+                s.append st.to_i
+                st = ''
+            end
+        end
+        s.append st.to_i
+
+        return s
+    end
+
+    def end_value
+        s = []
+        st = ''
+        for c in 0...self.endV.text.length do
+            if self.endV.text[c] != ',' and  self.endV.text[c].respond_to?('to_i') 
+                st +=  self.endV.text[c]
+            else
+                s.append st.to_i
+                st = ''
+            end
+        end
+        s.append st.to_i
+
+        return s
+    end
+
+
     def status=(x)
+    end
+
+    def lk1=(x)
+        @lk1 = x
+    end
+    def lk2=(x)
+        @lk2 = x
     end
 end
 
@@ -338,90 +457,34 @@ for i in 0...ROWS do
     ystep += 20
 end
 
-#Algunos bloques de codigo para las funciones de generar y resolver laberintos 
-dwll1 = lambda do |i,j|
-    #Elimina la pared uno si es posible 
-    if i > 0 and j >= 0 and i < ROWS and j < COLUMNS then 
-        if grid[i][j].status != 3 and grid[i][j].w1  then 
-            if i-1 >= 0 and grid[i+1][j].status != 3  and grid[i+1][j].w3 
-                grid[i][j].deletewall(1)
-                grid[i-1][j].deletewall(3)
-            else
-                return false
-            end
-        else 
-            return false
-        end
-
+#Algunos bloques de codigo para funciones relacionadas con saber la posicion del mouse sobre un objeto 
+in_starttxt = lambda do |x,y|
+    if x >= 1100 and x <= 1250 and y >= 150 and y <= 175
         true
-    else 
+    else
         false
     end
 end
 
-
-dwll2 = lambda do |i,j|
-    #Elimina la pared dos si es posible 
-    if i >= 0 and j < COLUMNS-1 and i < ROWS and j >= 0  then 
-        if grid[i][j].status != 3 and grid[i][j].w2  then 
-            if j + 1 <= COLUMNS-1 and grid[i][j+1].status != 3  and grid[i][j+1].w4 
-                grid[i][j].deletewall(2)
-                grid[i][j+1].deletewall(4)
-            else
-                return false
-            end
-        else 
-            return false
-        end
-
+in_endtxt = lambda do |x,y|
+    if x >= 1100 and x <= 1250 and y > 175 and y <= 200
         true
-    else 
+    else
         false
     end
 end
 
-dwll3 = lambda do |i,j|
-    #Elimina la pared tres si es posible 
-    if i < ROWS-1 and j >= 0  and i >= 0 and j < COLUMNS then 
-        if grid[i][j].status != 3 and grid[i][j].w3  then 
-            if i + 1 <= ROWS-1 and grid[i+1][j].status != 3  and grid[i+1][j].w1 then
-                grid[i][j].deletewall(3)
-                grid[i+1][j].deletewall(1)
-            else
-                return false
+def is_in_grid (x,y,grid)
+    for i in 0...ROWS do
+        for j in 0...COLUMNS do
+            if grid[i][j].in_node(x,y)
+                return [i,j]
             end
-        else 
-            return false
         end
-
-        true
-    else 
-        false
     end
+    return nil
 end
 
-
-dwll4 = lambda do |i,j|
-    #Elimina la cuatro tres si es posible 
-    if i < ROWS and j > 0  and i >= 0 and j < COLUMNS then 
-        if grid[i][j].status != 3 and grid[i][j].w4  then 
-            if j-1 >= 0 and grid[i][j-1].status != 3  and grid[i][j-1].w2 then
-                grid[i][j].deletewall(4)
-                grid[i+1][j].deletewall(2)
-            else
-                return false
-            end
-        else 
-            return false
-        end
-
-        true
-    else 
-        false
-    end
-end
-
-sleep 5
 
 rs = 0
 cl = 0
@@ -1288,19 +1351,140 @@ rest = 0
 start = [0,0]
 end_path = [29, 29]
 
+tab.startV.text = tab.start_value
 
-debug = Text.new(
-    'Current Queue : ',x: 50,
-    y: 700, size: 10, color: 'black',
-    z: 10 
-)
+tab.endV.text = tab.end_value
+
+#debug = Text.new(
+#    'Current Queue : ',x: 50,
+#    y: 700, size: 10, color: 'black',
+#    z: 10 
+#)
+def is_keypad(s)
+    case s
+    when 'keypad 0'
+        0
+    when 'keypad 1'
+        1
+    when 'keypad 2'
+        2
+    when 'keypad 3'
+        3
+    when 'keypad 4'
+        4
+    when 'keypad 5'
+        5
+    when 'keypad 6'
+        6
+    when 'keypad 7'
+        7
+    when 'keypad 8'
+        8
+    when 'keypad 9'
+        9
+    when '1'
+        1
+    when '2'
+        2
+    when '3'
+        3
+    when '4'
+        4
+    when '5'
+        5
+    when '6'
+        6
+    when '7'
+        7
+    when '8'
+        8
+    when '9'
+        9
+    when '0'
+        0
+    else
+        -1
+    end
+end
+
+on :mouse_down do |event|
+
+    case event.button
+    when :left
+        if in_starttxt.call event.x , event.y then
+            tab.lk1 = true
+            tab.lk2 = false
+            tab.startV.text = '[]'
+        end
+
+        if in_endtxt.call event.x,event.y then
+            tab.lk2 = true
+            tab.lk1 = false
+            tab.endV.text = '[]'
+        end
+
+
+        if is_in_grid(event.x, event.y,grid)  != nil then
+            if tab.lk1 then
+                a = is_in_grid(event.x, event.y,grid)
+                tab.startV.text = a[0].to_s+','+a[1].to_s 
+            end 
+            
+            if tab.lk2 then
+                a = is_in_grid(event.x, event.y,grid)
+                tab.endV.text = a[0].to_s+','+a[1].to_s
+            end
+        end
+    else
+    end
+end
+
+
+
 on :key_down do |event|
 
+
+    if (is_keypad(event.key) != -1 or event.key == ',' or event.key == '[' or event.key == ']') and event.key != 'backspace'
+        if is_keypad(event.key) != -1 
+            x = is_keypad(event.key)
+        else
+            x = event.key
+        end
+        if tab.startV.text == '[]'
+            tab.startV.text = ''
+        end
+        if tab.endV.text == '[]'
+            tab.endV.text = ''
+        end
+        if tab.lk1 then
+            
+            tab.startV.text += x.to_s
+        end
+
+        if tab.lk2 then
+            
+            tab.endV.text  += x.to_s      
+        end
+    end
+
+
+    if event.key == 'backspace'
+        if tab.lk1 then
+            tab.startV.text = tab.startV.text.chop 
+        end
+        if tab.lk2 then
+            tab.endV.text = tab.endV.text.chop 
+        end
+
+
+    end
     
     if rest >= 4 
         rest = 0
     end
     if event.key == 'r' then
+        tab.solvedS.text = '---'
+        tab.solvedS.color = 'black'
         tab.status.text = 'Reseting Grid'
         tab.status.color = 'red'
         tab.status.size = 5
@@ -2182,8 +2366,6 @@ on :key_down do |event|
     end
 
 
-
-
     if event.key == 'k'
         tab.gen_alg.text = 'Generation Algorithm: 2'
         tab.status.text = 'Generating Maze'
@@ -2194,7 +2376,7 @@ on :key_down do |event|
 
 
         update do
-            
+            #TE AMO LIZA FLORES <3 (si lees esto casate conmigo :3)
             if genlab == 1
                 current = stack[-1]
 
@@ -2836,8 +3018,13 @@ on :key_down do |event|
 
     #BFS
     if event.key == 'b'
-        
+        end_path = tab.end_value
+        start = tab.start_value
         s = []
+        grid[start[0]][start[1]].relleno.color = 'green'
+        grid[start[0]][start[1]].relleno.opacity = 0.4
+        grid[end_path[0]][end_path[1]].relleno.color = 'red'
+        grid[end_path[0]][end_path[1]].relleno.opacity = 0.4
 
         s.unshift start
 
@@ -2848,15 +3035,17 @@ on :key_down do |event|
         update do
             
             if e == false
+                tab.solvedS.text = 'Solving'
+                tab.solvedS.color = 'yellow'
                 current = s.pop
                 
                 if current[0]-1 >= 0 and grid[current[0]-1][current[1]].stat == 1 and (grid[current[0]][current[1]].w1 == false and grid[current[0]-1][current[1]].w3 == false)
                     grid[current[0]-1][current[1]].father = current
                     grid[current[0]-1][current[1]].distance = grid[current[0]][current[1]].distance+1 
                     grid[current[0]-1][current[1]].explored(2)
-                    if grid[current[0]-1][current[1]].center.size <= 4
-                        grid[current[0]-1][current[1]].center.size += 2
-                    end
+                    
+                    grid[current[0]-1][current[1]].relleno.color = 'yellow'
+                    grid[current[0]-1][current[1]].relleno.opacity = 0.5
                     s.unshift [current[0]-1,current[1]]
                 end
 
@@ -2865,9 +3054,9 @@ on :key_down do |event|
                     grid[current[0]][current[1]+1].distance = grid[current[0]][current[1]].distance+1
                     grid[current[0]][current[1]+1].explored(2)
                     
-                    if grid[current[0]][current[1]+1].center.size <= 4
-                        grid[current[0]][current[1]+1].center.size += 2
-                    end 
+
+                    grid[current[0]][current[1]+1].relleno.color = 'yellow'
+                    grid[current[0]][current[1]+1].relleno.opacity = 0.5
                     
                     s.unshift [current[0],current[1]+1]
                 end
@@ -2877,9 +3066,9 @@ on :key_down do |event|
                     grid[current[0]+1][current[1]].father = current
                     grid[current[0]+1][current[1]].distance = grid[current[0]][current[1]].distance+1
                     grid[current[0]+1][current[1]].explored(2)
-                    if grid[current[0]+1][current[1]].center.size <= 4
-                        grid[current[0]+1][current[1]].center.size += 2
-                    end 
+                    
+                    grid[current[0]+1][current[1]].relleno.color = 'yellow'
+                    grid[current[0]+1][current[1]].relleno.opacity = 0.5
                     
                     s.unshift [current[0]+1,current[1]]
                 end
@@ -2888,27 +3077,37 @@ on :key_down do |event|
                     grid[current[0]][current[1]-1].father = current
                     grid[current[0]][current[1]-1].distance = grid[current[0]][current[1]].distance+1
                     grid[current[0]][current[1]-1].explored(2)
-                    if grid[current[0]][current[1]-1].center.size <= 4
-                        grid[current[0]][current[1]-1].center.size += 2
-                    end
+                
+                    grid[current[0]][current[1]-1].relleno.color = 'yellow'
+                    grid[current[0]][current[1]-1].relleno.opacity = 0.5
 
                     s.unshift [current[0],current[1]-1]
                 end
 
                 grid[current[0]][current[1]].explored(3)
                 
-                sleep 0.1
-                debug.text  = s
-                if s.length == 0 or (current[0] == end_path[0] and current[1] == end_path[1])
+                #sleep 0.1
+                #debug.text  = s
+                if (current[0] == end_path[0] and current[1] == end_path[1])
+                    tab.solvedS.text = 'Solved'
+                    tab.solvedS.color = 'olive'
                     e = true
+                    s = []
+                    #debug.text = s
+                elsif s.length == 0
+                    e = true
+                    tab.solvedS.text = 'No Solution'
+                    tab.solvedS.color = 'red'
                 end 
             end
 
 
             if e == true 
                 if end_path != nil and grid[end_path[0]][end_path[1]].stat == 3 and end_path != start
-                    grid[end_path[0]][end_path[1]].center.size = 5
-                    grid[end_path[0]][end_path[1]].center.color = 'red'
+                    
+                    #grid[end_path[0]][end_path[1]].center.size = 5
+                    grid[end_path[0]][end_path[1]].relleno.color = 'red'
+                    grid[end_path[0]][end_path[1]].relleno.opacity = 0.3
                     end_path = grid[end_path[0]][end_path[1]].father
                 end
                 
