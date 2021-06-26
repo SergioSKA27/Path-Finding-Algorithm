@@ -40,28 +40,28 @@ class Node
         @wall1 = Line.new(
             x1: x-10 , y1:y-10,
             x2: x+20 , y2:y-10,
-            color: color, width: 4, z: 10
+            color: color, z: 10 # width: 4,
         )
         @w1 = true
         #Pared derecha
         @wall2 = Line.new(
             x1: x+20 , y1:y-8,
             x2: x+20 , y2:y+8,
-            color: color, width: 4, z: 10
+            color: color, z: 10   #width: 4,
         )
         @w2 = true
         #Pared inferior
         @wall3 = Line.new(
             x1: x-10 , y1:y+10,
             x2: x+20 , y2:y+10,
-            color: color, width: 4, z: 10
+            color: color,z: 10 # width: 4, 
         )
         @w3 = true
         #Pared izquierda
         @wall4 = Line.new(
             x1: x-10 , y1:y-8,
             x2: x-10 , y2:y+8,
-            color: color, width: 4, z: 10
+            color: color,z: 10 # width: 4, 
         )
         @w4 = true
         #centro(relativamete :v)
@@ -243,6 +243,19 @@ eliminar y la colorea automaticamente al color del background actual.
         @explored = 1
         @relleno.opacity = 1.0
         @relleno.color = 'black'
+    end
+
+
+    def res_s
+        @center.color = 'blue'
+        @visited = 1
+        @center.size = 1
+        @father = nil
+        @distance = Float::INFINITY
+        @explored = 1
+        if @relleno.opacity != 1.0
+            @relleno.opacity = 0.0 
+        end
     end
 
     def show_node
@@ -508,845 +521,6 @@ stack = []
     proceso hasta que no podamos escoger ninguna de las 4 paredes,entoces hacemos pop a la pila que 
     ha estado almacenando las posiciones hasta encontrar alguna en la que se pueda eliminar alguna 
     de las 4 paredes. Este proceso termina cuando la pila se queda vacia.
-
-update do
-    
-    if genlab == 1 then
-
-        tab.status.text = 'Generating Maze'
-        tab.status.color = 'lime'
-        
-        top = stack[-1]
-        
-        randwall = rand(4)+1
-
-        
-        if randwall == 1 then
-
-            if (top[0]-1 != 0  and top[0]-1 > 0 ) and grid[top[0]-1][top[1]].status != 3 then
-                grid[top[0]][top[1]].deletewall(1)
-                stack << [top[0]-1, top[1]]
-                grid[top[0]-1][top[1]].visited(2)
-                if top[0]-1 > 0
-                    grid[top[0]-1][top[1]].deletewall(3)
-                end
-            else 
-
-                while randwall == 1
-                    randwall = rand(4) +1
-                end
-
-                if randwall == 2 then
-                    if( top[1]+1 < COLUMNS and top[1] != COLUMNS-1 ) and grid[top[0]][top[1]+1].status != 3 then
-                        grid[top[0]][top[1]].deletewall(2)
-                        stack << [top[0], top[1]+1]
-                        grid[top[0]][top[1]+1].visited(2)
-                        if top[1]+1 < COLUMNS-1
-                            grid[top[0]][top[1]+1].deletewall(4)
-                        end
-                    else
-                        ns = [3,4]
-                        randwall = ns[rand(2)]
-                        if randwall == 3 then
-                            if (top[0]+1 < ROWS and top[0] != ROWS-1 ) and grid[top[0]+1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(3)
-                                stack << [top[0]+1, top[1]]
-                                grid[top[0]+1][top[1]].visited(2)
-                                if top[0]+1 < ROWS-1
-                                    grid[top[0]+1][top[1]].deletewall(1)
-                                end
-                            else
-                                if (top[1]-1 >= 0 and top[1] != 0 ) and grid[top[0]][top[1]-1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(4)
-                                    stack << [top[0], top[1]-1]
-                                    grid[top[0]][top[1]-1].visited(2)
-                                    if top[1]-1 > 0
-                                        grid[top[0]][top[1]-1].deletewall(2)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 4 then
-                            if  (top[1]-1 >= 0 and top[1] != 0 )and grid[top[0]][top[1]-1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(4)
-                                stack << [top[0], top[1]-1]
-                                grid[top[0]][top[1]-1].visited(2)
-                                if top[1]-1 > 0
-                                    grid[top[0]][top[1]-1].deletewall(2)
-                                end
-                            else
-                                if (top[0]+1 < ROWS and top[0] != ROWS-1 ) and grid[top[0]+1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(3)
-                                    stack << [top[0]+1, top[1]]
-                                    grid[top[0]+1][top[1]].visited(2)
-                                    if top[0]+1 < ROWS-1
-                                        grid[top[0]+1][top[1]].deletewall(1)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-
-                if randwall == 3 then
-                    if (top[0]+1 < ROWS and top[0] != ROWS-1 ) and grid[top[0]+1][top[1]].status != 3 then
-                        grid[top[0]][top[1]].deletewall(3)
-                        stack << [top[0]+1, top[1]]
-                        grid[top[0]+1][top[1]].visited(2)
-                        if top[0]+1 < ROWS-1
-                            grid[top[0]+1][top[1]].deletewall(1)
-                        end
-                    else
-                        ns = [2,4]
-                        randwall = ns[rand(2)]
-                        if randwall == 2 then
-                            if( top[1]+1 < COLUMNS and top[1] != COLUMNS-1 ) and grid[top[0]][top[1]+1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(2)
-                                stack << [top[0], top[1]+1]
-                                grid[top[0]][top[1]+1].visited(2)
-                                if top[1]+1 < COLUMNS-1
-                                    grid[top[0]][top[1]+1].deletewall(4)
-                                end
-                            else
-                                if (top[1]-1 >= 0 and top[1] != 0 ) and grid[top[0]][top[1]-1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(4)
-                                    stack << [top[0], top[1]-1]
-                                    grid[top[0]][top[1]-1].visited(2)
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 4 then
-                            if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(4)
-                                stack << [top[0], top[1]-1]
-                                grid[top[0]][top[1]-1].visited(2)
-                                if top[1]-1 > 0
-                                    grid[top[0]][top[1]-1].deletewall(2)
-                                end
-                            else
-                                if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1 )and grid[top[0]][top[1]+1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(2)
-                                    stack << [top[0], top[1]+1]
-                                    grid[top[0]][top[1]+1].visited(2)
-                                    if top[1]+1 > 0
-                                        grid[top[0]][top[1]+1].deletewall(4)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-
-                if randwall == 4 then
-                    if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                        grid[top[0]][top[1]].deletewall(4)
-                        stack << [top[0], top[1]-1]
-                        grid[top[0]][top[1]-1].visited(2)
-                        if top[1]-1 > 0
-                            grid[top[0]][top[1]-1].deletewall(2)
-                        end
-                    else
-                        ns = [3,2]
-                        randwall = ns[rand(2)]
-                        if randwall == 3 then
-                            if( top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(3)
-                                stack << [top[0]+1, top[1]]
-                                grid[top[0]+1][top[1]].visited(2)
-                                if top[0]+1 < ROWS-1
-                                    grid[top[0]+1][top[1]].deletewall(1)
-                                end
-                            else
-                                if (top[1]+1 < COLUMNS  and top[1] != COLUMNS-1)and grid[top[0]][top[1]+1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(2)
-                                    stack << [top[0], top[1]+1]
-                                    grid[top[0]][top[1]+1].visited(2)
-                                    if top[1]+1 <COLUMNS-1
-                                        grid[top[0]][top[1]+1].deletewall(4)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 2 then
-                            if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(2)
-                                stack << [top[0], top[1]+1]
-                                grid[top[0]][top[1]+1].visited(2)
-                                if top[1]+1 > 0
-                                    grid[top[0]][top[1]+1].deletewall(4)
-                                end
-                            else
-                                if( top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(3)
-                                    stack << [top[0]+1, top[1]]
-                                    grid[top[0]+1][top[1]].visited(2)
-
-                                    if top[0]+1 < ROWS-1
-                                        grid[top[0]+1][top[1]-1].deletewall(1)
-                                    end
-
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-            end
-        end
-        #CORREGIDO XD
-
-        
-        #Te amo liza flores <<33(si leees esto casate conmigo :3)
-        
-
-        if randwall == 2 then
-            if (top[1] + 1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                grid[top[0]][top[1]].deletewall(2)
-                stack << [top[0], top[1]+1]
-                grid[top[0]][top[1]+1].visited(2)
-                if top[1]+1 < COLUMNS-1
-                    grid[top[0]][top[1]+1].deletewall(4)
-                end
-            else 
-                while randwall == 2
-                    randwall = rand(4) +1
-                end
-
-                if randwall == 1 then
-                    if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                        grid[top[0]][top[1]].deletewall(1)
-                        stack << [top[0]-1, top[1]]
-                        grid[top[0]-1][top[1]].visited(2)
-                        if top[0]-1 > 0
-                            grid[top[0]-1][top[1]].deletewall(3)
-                        end
-                    else
-                        ns = [3,4]
-                        randwall = ns[rand(2)]
-                        if randwall == 3 then
-                            if (top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(3)
-                                stack << [top[0]+1, top[1]]
-                                grid[top[0]+1][top[1]].visited(2)
-                                if top[0]+1 < ROWS-1
-                                    grid[top[0]+1][top[1]].deletewall(1)
-                                end
-                            else
-                                if (top[1]-1 >= 0  and top[1] != 0)and grid[top[0]][top[1]-1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(4)
-                                    stack << [top[0], top[1]-1]
-                                    grid[top[0]][top[1]-1].visited(2)
-                                    if top[1]-1 > 0
-                                        grid[top[0]][top[1]-1].deletewall(2)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 4 then
-                            if (top[1]-1 > 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(4)
-                                stack << [top[0], top[1]-1]
-                                grid[top[0]][top[1]-1].visited(2)
-                                if top[1]-1 > 0
-                                    grid[top[0]][top[1]-1].deletewall(2)
-                                end
-                            else
-                                if (top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(3)
-                                    stack << [top[0]+1, top[1]]
-                                    grid[top[0]+1][top[1]].visited(2)
-                                    if top[0]+1 < ROWS-1
-                                        grid[top[0]+1][top[1]].deletewall(1)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-
-                if randwall == 3 then
-                    if( top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                        grid[top[0]][top[1]].deletewall(3)
-                        stack << [top[0]+1, top[1]]
-                        grid[top[0]+1][top[1]].visited(2)
-                        if top[0]+1 < ROWS-1
-                            grid[top[0]+1][top[1]].deletewall(1)
-                        end
-                    else
-                        ns = [1,4]
-                        randwall = ns[rand(2)]
-                        if randwall == 1 then
-                            if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(1)
-                                stack << [top[0]-1, top[1]]
-                                grid[top[0]-1][top[1]].visited(2)
-                                if top[0]-1 > 0
-                                    grid[top[0]-1][top[1]].deletewall(3)
-                                end
-                            else
-                                if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(4)
-                                    stack << [top[0], top[1]-1]
-                                    grid[top[0]][top[1]-1].visited(2)
-                                    if top[1]-1 > 0
-                                        grid[top[0]][top[1]-1].deletewall(2)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 4 then
-                            if (top[1]-1 >= 0 and top[0] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(4)
-                                stack << [top[0], top[1]-1]
-                                grid[top[0]][top[1]-1].visited(2)
-                                if top[1]-1 > 0
-                                    grid[top[0]][top[1]-1].deletewall(2)
-                                end
-                            else
-                                if (top[0]-1 >= 0  and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(1)
-                                    stack << [top[0]-1, top[1]]
-                                    grid[top[0]-1][top[1]].visited(2)
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-
-                if randwall == 4 then
-                    if( top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                        grid[top[0]][top[1]].deletewall(4)
-                        stack << [top[0], top[1]-1]
-                        grid[top[0]][top[1]-1].visited(2)
-                    else
-                        ns = [3,1]
-                        randwall = ns[rand(2)]
-                        if randwall == 3 then
-                            if (top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(3)
-                                stack << [top[0]+1, top[1]]
-                                grid[top[0]+1][top[1]].visited(2)
-                                if top[0]+1 < ROWS-1
-                                    grid[top[0]+1][top[1]].deletewall(1)
-                                end
-                            else
-                                if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(1)
-                                    stack << [top[0]-1, top[1]]
-                                    grid[top[0]-1][top[1]].visited(2)
-                                    if top[0]-1 > 0
-                                        grid[top[0]-1][top[1]].deletewall(3)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 1 then
-                            if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(1)
-                                stack << [top[0]-1, top[1]]
-                                grid[top[0]-1][top[1]].visited(2)
-                                if top[0]-1 > 0
-                                    grid[top[0]-1][top[1]].deletewall(3)
-                                end
-                            else
-                                if (top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(3)
-                                    stack << [top[0]+1, top[1]]
-                                    grid[top[0]-+1][top[1]].visited(2)
-                                    if top[0]+1 < ROWS-1
-                                        grid[top[0]+1][top[1]].deletewall(1)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-            end
-        end
-        #Corregido XD
-        
-        if randwall == 3 then
-            if (top[0] + 1 < ROWS and top[0]  != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                grid[top[0]][top[1]].deletewall(3)
-                stack << [top[0]+1, top[1]]
-                grid[top[0]+1][top[1]].visited(2)
-                if top[0]+1 < ROWS-1
-                    grid[top[0]+1][top[1]].deletewall(1)
-                end
-            else 
-                while randwall == 3
-                    randwall = rand(4) + 1
-                end
-
-                if randwall == 2 then
-                    if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1 ) and grid[top[0]][top[1]+1].status != 3 then
-                        grid[top[0]][top[1]].deletewall(2)
-                        stack << [top[0], top[1]+1]
-                        grid[top[0]][top[1]+1].visited(2)
-                        if top[1]+1 < COLUMNS-1
-                            grid[top[0]][top[1]+1].deletewall(4)
-                        end
-                    else
-                        ns = [1,4]
-                        randwall = ns[rand(2)]
-                        if randwall == 1 then
-                            if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(1)
-                                stack << [top[0]-1, top[1]]
-                                grid[top[0]-1][top[1]].visited(2)
-                                if top[0]-1 > 0
-                                    grid[top[0]-1][top[1]].deletewall(3)
-                                end
-                            else
-                                if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(4)
-                                    stack << [top[0], top[1]-1]
-                                    grid[top[0]][top[1]-1].visited(2)
-                                    if top[1]-1 > 0
-                                        grid[top[0]][top[1]-1].deletewall(2)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 4 then
-                            if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(4)
-                                stack << [top[0], top[1]-1]
-                                grid[top[0]][top[1]-1].visited(2)
-                                if top[1]-1 > 0
-                                    grid[top[0]][top[1]-1].deletewall(2)
-                                end
-                            else
-                                if (top[0]-1 >= 0 and top[0] != 0)and grid[top[0]-1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(1)
-                                    stack << [top[0]-1, top[1]]
-                                    grid[top[0]-1][top[1]].visited(2)
-                                    if top[0]-1 > 0
-                                        grid[top[0]-1][top[1]].deletewall(3)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-
-                if randwall == 1 then
-                    if (top[0]-1 > 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                        grid[top[0]][top[1]].deletewall(1)
-                        stack << [top[0]-1, top[1]]
-                        grid[top[0]-1][top[1]].visited(2)
-                        if top[0]-1 > 0
-                            grid[top[0]-1][top[1]].deletewall(3)
-                        end
-                    else
-                        ns = [2,4]
-                        randwall = ns[rand(2)]
-                        if randwall == 2 then
-                            if (top[1]+1 < COLUMNS and top[1] != ROWS-1) and grid[top[0]][top[1]+1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(2)
-                                stack << [top[0], top[1]+1]
-                                grid[top[0]][top[1]+1].visited(2)
-                                if top[1]+1 < COLUMNS-1
-                                    grid[top[0]][top[1]+1].deletewall(4)
-                                end
-                            else
-                                if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(4)
-                                    stack << [top[0], top[1]-1]
-                                    grid[top[0]][top[1]-1].visited(2)
-                                    if top[1]-1 > 0
-                                        grid[top[0]][top[1]-1].deletewall(2)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 4 then
-                            if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(4)
-                                stack << [top[0], top[1]-1]
-                                grid[top[0]][top[1]-1].visited(2)
-                                if top[1]-1 > 0
-                                    grid[top[0]][top[1]-1].deletewall(2)
-                                end
-                            else
-                                if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(2)
-                                    stack << [top[0], top[1]+1]
-                                    grid[top[0]][top[1]+1].visited(2)
-                                    if top[1]+1 < COLUMNS-1
-                                        grid[top[0]][top[1]-1].deletewall(4)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-
-                if randwall == 4 then
-
-                    if (top[1]-1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                        grid[top[0]][top[1]].deletewall(4)
-                        stack << [top[0], top[1]-1]
-                        grid[top[0]][top[1]-1].visited(2)
-                        if top[1]-1 > 0
-                            grid[top[0]][top[1]-1].deletewall(2)
-                        end
-                    else
-                        ns = [1,2]
-                        randwall = ns[rand(2)]
-                        if randwall == 1 then
-                            if( top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(1)
-                                stack << [top[0]-1, top[1]]
-                                grid[top[0]-1][top[1]].visited(2)
-                                if top[0]-1 > 0
-                                    grid[top[0]-1][top[1]].deletewall(3)
-                                end
-                            else
-                                if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(2)
-                                    stack << [top[0], top[1]+1]
-                                    grid[top[0]][top[1]+1].visited(2)
-                                    if top[1]+1 < COLUMNS-1
-                                        grid[top[0]][top[1]+1].deletewall(4)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 2 then
-                            if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(2)
-                                stack << [top[0], top[1]+1]
-                                grid[top[0]][top[1]+1].visited(2)
-                                if top[1]+1 < COLUMNS-1
-                                    grid[top[0]][top[1]+1].deletewall(4)
-                                end
-                            else
-                                if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(1)
-                                    stack << [top[0]-1, top[1]]
-                                    grid[top[0]-1][top[1]].visited(2)
-                                    if top[0]-1 > 0
-                                        grid[top[0]-1][top[1]].deletewall(3)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-            end
-        end
-        #Corregido XD
-
-        if randwall == 4 then
-            if (top[1] -1 >= 0 and top[1] != 0) and grid[top[0]][top[1]-1].status != 3 then
-                grid[top[0]][top[1]].deletewall(4)
-                stack << [top[0], top[1]-1]
-                grid[top[0]][top[1]-1].visited(2)
-                if top[1]-1 > 0
-                    grid[top[0]][top[1]-1].deletewall(2)
-                end
-            else 
-                while randwall == 4
-                    randwall = rand(4) +1
-                end
-
-                if randwall == 2 then
-                    if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                        grid[top[0]][top[1]].deletewall(2)
-                        stack << [top[0], top[1]+1]
-                        grid[top[0]][top[1]+1].visited(2)
-                        if top[1]+1 < COLUMNS-1
-                            grid[top[0]][top[1]+1].deletewall(4)
-                        end
-
-                    else
-                        ns = [3,1]
-                        randwall = ns[rand(2)]
-                        if randwall == 3 then
-                            if (top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(3)
-                                stack << [top[0]+1, top[1]]
-                                grid[top[0]+1][top[1]].visited(2)
-                                if top[0]+1 < ROWS-1
-                                    grid[top[0]+1][top[1]].deletewall(1)
-                                end
-                            else
-                                if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(1)
-                                    stack << [top[0]-1, top[1]]
-                                    grid[top[0]-1][top[1]].visited(2)
-                                    if top[0]-1 > 0
-                                        grid[top[0]-1][top[1]].deletewall(3)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 1 then
-                            if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(1)
-                                stack << [top[0]-1, top[1]]
-                                grid[top[0]-1][top[1]].visited(2)
-                                if top[0]-1 > 0
-                                    grid[top[0]-1][top[1]].deletewall(3)
-                                end
-                            else
-                                if (top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(3)
-                                    stack << [top[0]+1, top[1]]
-                                    grid[top[0]+1][top[1]].visited(2)
-                                    if top[0]+1 < ROWS-1
-                                        grid[top[0]+1][top[1]].deletewall(1)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-
-                if randwall == 3 then
-                    if (top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                        grid[top[0]][top[1]].deletewall(3)
-                        stack << [top[0]+1, top[1]]
-                        grid[top[0]+1][top[1]].visited(2)
-                        if top[0]+1 < ROWS-1
-                            grid[top[0]+1][top[1]].deletewall(1)
-                        end
-                    else
-                        ns = [2,1]
-                        randwall = ns[rand(2)]
-                        if randwall == 2 then
-                            if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(2)
-                                stack << [top[0], top[1]+1]
-                                grid[top[0]][top[1]+1].visited(2)
-                                if top[1]+1 < COLUMNS-1
-                                    grid[top[0]][top[1]+1].deletewall(4)
-                                end
-                            else
-                                if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(1)
-                                    stack << [top[0]-1, top[1]]
-                                    grid[top[0]-1][top[1]].visited(2)
-                                    if top[0]-1 > 0
-                                        grid[top[0]-1][top[1]].deletewall(3)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 1 then
-                            if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(1)
-                                stack << [top[0]-1, top[1]]
-                                grid[top[0]-1][top[1]].visited(2)
-                                if top[0]-1 > 0
-                                    grid[top[0]-1][top[1]].deletewall(3)
-                                end
-                            else
-                                if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(2)
-                                    stack << [top[0], top[1]+1]
-                                    grid[top[0]][top[1]+1].visited(2)
-                                    if top[1]+1 < COLUMNS-1
-                                        grid[top[0]][top[1]+1].deletewall(4)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-
-                if randwall == 1 then
-                    if (top[0]-1 >= 0 and top[0] != 0) and grid[top[0]-1][top[1]].status != 3 then
-                        grid[top[0]][top[1]].deletewall(1)
-                        stack << [top[0]-1, top[1]]
-                        grid[top[0]-1][top[1]].visited(2)
-                        if top[0]-1 > 0
-                            grid[top[0]-1][top[1]].deletewall(3)
-                        end
-                    else
-                        ns = [3,2]
-                        randwall = ns[rand(2)]
-                        if randwall == 3 then
-                            if (top[0]+1 < ROWS and top[0] != ROWS-1 ) and grid[top[0]+1][top[1]].status != 3 then
-                                grid[top[0]][top[1]].deletewall(3)
-                                stack << [top[0]+1, top[1]]
-                                grid[top[0]+1][top[1]].visited(2)
-                                if top[0]+1 < ROWS-1
-                                    grid[top[0]+1][top[1]].deletewall(1)
-                                end
-                            else
-                                if (top[1]+1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(2)
-                                    stack << [top[0], top[1]+1]
-                                    grid[top[0]][top[1]+1].visited(2)
-                                    if top[1]+1 < COLUMNS-1
-                                        grid[top[0]][top[1]+1].deletewall(4)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                        if randwall == 2 then
-                            if( top[1]+1 < COLUMNS and top[1] != COLUMNS-1) and grid[top[0]][top[1]+1].status != 3 then
-                                grid[top[0]][top[1]].deletewall(2)
-                                stack << [top[0], top[1]+1]
-                                grid[top[0]][top[1]+1].visited(2)
-                                if top[1]+1 < COLUMNS-1
-                                    grid[top[0]][top[1]+1].deletewall(4)
-                                end
-                            else
-                                if (top[0]+1 < ROWS and top[0] != ROWS-1) and grid[top[0]+1][top[1]].status != 3 then
-                                    grid[top[0]][top[1]].deletewall(3)
-                                    stack << [top[0]+1, top[1]]
-                                    grid[top[0]+1][top[1]].visited(2)
-                                    if top[0]+1 < ROWS-1
-                                        grid[top[0]+1][top[1]].deletewall(1)
-                                    end
-                                else
-                                    stack.pop
-                                end
-                            end
-                        end
-
-                    end
-
-
-                end
-
-
-            end
-        end
-
-        grid[top[0]][top[1]].visited(3)
-        #grid[top[0]][top[1]].center.size += 1
-
-
-        if stack.length == 0 then 
-            genlab = 0
-        end
-
-    end#genlab
-
-
-    if genlab == 0 then
-        tab.status.text = 'Maze Generated'
-        tab.status.color = 'olive' 
-    end
-
-end
-
 =end
 
 rest = 0
@@ -1498,19 +672,273 @@ on :key_down do |event|
         i = 0
         j = 0
         update do
-            if i < ROWS and j < COLUMNS then
-                grid[i][j].restart 
+
+            if grid[0][j] != nil
+                grid[0][j].restart 
             end
 
-            j += 1
-
-            if j== COLUMNS and i < ROWS then 
-                j = 0
-                i += 1
+            if grid[1][j] != nil
+                grid[1][j].restart 
             end
 
-            if i >= ROWS-1  and j >= COLUMNS then
+            if grid[2][j] != nil
+                grid[2][j].restart 
+            end
+
+            if grid[3][j] != nil
+                grid[3][j].restart 
+            end
+
+            if grid[4][j] != nil
+                grid[4][j].restart 
+            end
+
+            if grid[5][j] != nil
+                grid[5][j].restart 
+            end
+
+            if grid[6][j] != nil
+                grid[6][j].restart 
+            end
+
+            if grid[7][j] != nil
+                grid[7][j].restart 
+            end
+
+            if grid[8][j] != nil
+                grid[8][j].restart 
+            end
+
+            if grid[9][j] != nil
+                grid[9][j].restart 
+            end
+
+            if grid[10][j] != nil
+                grid[10][j].restart 
+            end
+
+            if grid[11][j] != nil
+                grid[11][j].restart 
+            end
+
+            if grid[12][j] != nil
+                grid[12][j].restart 
+            end
+
+            if grid[13][j] != nil
+                grid[13][j].restart 
+            end
+
+            if grid[14][j] != nil
+                grid[14][j].restart 
+            end
+
+            if grid[15][j] != nil
+                grid[15][j].restart 
+            end
+
+            if grid[16][j] != nil
+                grid[16][j].restart 
+            end
+
+            if grid[17][j] != nil
+                grid[17][j].restart 
+            end
+
+            if grid[18][j] != nil
+                grid[18][j].restart 
+            end
+
+            if grid[19][j] != nil
+                grid[19][j].restart 
+            end
+
+            if grid[20][j] != nil
+                grid[20][j].restart 
+            end
+
+            if grid[21][j] != nil
+                grid[21][j].restart 
+            end
+
+            if grid[22][j] != nil
+                grid[22][j].restart 
+            end
+
+            if grid[23][j] != nil
+                grid[23][j].restart 
+            end
+
+            if grid[24][j] != nil
+                grid[24][j].restart 
+            end
+
+            if grid[25][j] != nil
+                grid[25][j].restart 
+            end
+
+            if grid[26][j] != nil
+                grid[26][j].restart 
+            end
+
+            if grid[27][j] != nil
+                grid[27][j].restart 
+            end
+
+            if grid[28][j] != nil
+                grid[28][j].restart 
+            end
+
+            if grid[29][j] != nil
+                grid[29][j].restart 
+            end
+
+            j+= 1
+
+            if j >= COLUMNS-1 then
                 tab.status.text = 'Grid reset'
+                tab.status.color = 'orange'
+            end
+        end
+
+        
+    end
+
+
+    if event.key == 't' then
+        tab.solvedS.text = '---'
+        tab.solvedS.color = 'black'
+        tab.status.text = 'Reseting maze'
+        tab.status.color = 'red'
+        tab.status.size = 5
+        i = 0
+        j = 0
+        update do
+
+            if grid[0][j] != nil
+                grid[0][j].res_s 
+            end
+
+            if grid[1][j] != nil
+                grid[1][j].res_s 
+            end
+
+            if grid[2][j] != nil
+                grid[2][j].res_s 
+            end
+
+            if grid[3][j] != nil
+                grid[3][j].res_s 
+            end
+
+            if grid[4][j] != nil
+                grid[4][j].res_s 
+            end
+
+            if grid[5][j] != nil
+                grid[5][j].res_s 
+            end
+
+            if grid[6][j] != nil
+                grid[6][j].res_s 
+            end
+
+            if grid[7][j] != nil
+                grid[7][j].res_s 
+            end
+
+            if grid[8][j] != nil
+                grid[8][j].res_s 
+            end
+
+            if grid[9][j] != nil
+                grid[9][j].res_s 
+            end
+
+            if grid[10][j] != nil
+                grid[10][j].res_s 
+            end
+
+            if grid[11][j] != nil
+                grid[11][j].res_s 
+            end
+
+            if grid[12][j] != nil
+                grid[12][j].res_s 
+            end
+
+            if grid[13][j] != nil
+                grid[13][j].res_s 
+            end
+
+            if grid[14][j] != nil
+                grid[14][j].res_s 
+            end
+
+            if grid[15][j] != nil
+                grid[15][j].res_s 
+            end
+
+            if grid[16][j] != nil
+                grid[16][j].res_s 
+            end
+
+            if grid[17][j] != nil
+                grid[17][j].res_s 
+            end
+
+            if grid[18][j] != nil
+                grid[18][j].res_s 
+            end
+
+            if grid[19][j] != nil
+                grid[19][j].res_s 
+            end
+
+            if grid[20][j] != nil
+                grid[20][j].res_s 
+            end
+
+            if grid[21][j] != nil
+                grid[21][j].res_s 
+            end
+
+            if grid[22][j] != nil
+                grid[22][j].res_s 
+            end
+
+            if grid[23][j] != nil
+                grid[23][j].res_s 
+            end
+
+            if grid[24][j] != nil
+                grid[24][j].res_s 
+            end
+
+            if grid[25][j] != nil
+                grid[25][j].res_s 
+            end
+
+            if grid[26][j] != nil
+                grid[26][j].res_s 
+            end
+
+            if grid[27][j] != nil
+                grid[27][j].res_s 
+            end
+
+            if grid[28][j] != nil
+                grid[28][j].res_s 
+            end
+
+            if grid[29][j] != nil
+                grid[29][j].res_s 
+            end
+
+            j+= 1
+
+            if j >= COLUMNS-1 then
+                tab.status.text = 'Maze reset'
                 tab.status.color = 'orange'
             end
         end
@@ -2270,6 +1698,102 @@ on :key_down do |event|
 
         
     end
+
+
+
+    if event.key == 'd'
+        end_path = tab.end_value
+        start = tab.start_value
+        s = []
+        grid[start[0]][start[1]].relleno.color = 'green'
+        grid[start[0]][start[1]].relleno.opacity = 0.4
+        grid[end_path[0]][end_path[1]].relleno.color = 'red'
+        grid[end_path[0]][end_path[1]].relleno.opacity = 0.4
+
+        s << start
+
+        e = true
+        update do
+            if e 
+                tab.solvedS.text = 'Solving'
+                tab.solvedS.color = 'yellow'
+                current = s.pop
+
+                if current[0]-1 >= 0 and grid[current[0]-1][current[1]].stat == 1 and (grid[current[0]][current[1]].w1 == false and grid[current[0]-1][current[1]].w3 == false)
+                    grid[current[0]-1][current[1]].father = current
+                    grid[current[0]-1][current[1]].distance = grid[current[0]][current[1]].distance+1 
+                    grid[current[0]-1][current[1]].explored(2)
+                    
+                    grid[current[0]-1][current[1]].relleno.color = 'yellow'
+                    grid[current[0]-1][current[1]].relleno.opacity = 0.5
+                    s <<  [current[0]-1,current[1]]
+                end
+
+                if current[1]+1 < COLUMNS and grid[current[0]][current[1]+1].stat == 1 and (grid[current[0]][current[1]].w2 == false and grid[current[0]][current[1]+1].w4 == false)
+                    grid[current[0]][current[1]+1].father = current
+                    grid[current[0]][current[1]+1].distance = grid[current[0]][current[1]].distance+1
+                    grid[current[0]][current[1]+1].explored(2)
+                    grid[current[0]][current[1]+1].relleno.color = 'yellow'
+                    grid[current[0]][current[1]+1].relleno.opacity = 0.5
+                    
+                    s <<  [current[0],current[1]+1]
+                end
+
+
+                if current[0]+1 < ROWS and grid[current[0]+1][current[1]].stat == 1  and (grid[current[0]][current[1]].w3 == false or grid[current[0]+1][current[1]].w1 == false)
+                    grid[current[0]+1][current[1]].father = current
+                    grid[current[0]+1][current[1]].distance = grid[current[0]][current[1]].distance+1
+                    grid[current[0]+1][current[1]].explored(2)
+                    
+                    grid[current[0]+1][current[1]].relleno.color = 'yellow'
+                    grid[current[0]+1][current[1]].relleno.opacity = 0.5
+                    
+                    s << [current[0]+1,current[1]]
+                end
+
+                if current[1]-1 >= 0 and grid[current[0]][current[1]-1].stat == 1  and (grid[current[0]][current[1]].w4 == false or grid[current[0]][current[1]-1].w2 == false)
+                    grid[current[0]][current[1]-1].father = current
+                    grid[current[0]][current[1]-1].distance = grid[current[0]][current[1]].distance+1
+                    grid[current[0]][current[1]-1].explored(2)
+                
+                    grid[current[0]][current[1]-1].relleno.color = 'yellow'
+                    grid[current[0]][current[1]-1].relleno.opacity = 0.5
+
+                    s <<  [current[0],current[1]-1]
+                end
+
+                grid[current[0]][current[1]].explored(3)
+                
+                #sleep 0.1
+                #debug.text  = s
+                if (current[0] == end_path[0] and current[1] == end_path[1])
+                    tab.solvedS.text = 'Solved'
+                    tab.solvedS.color = 'olive'
+                    e = false
+                    s = []
+                    #debug.text = s
+                elsif s.length == 0
+                    e = false
+                    tab.solvedS.text = 'No Solution'
+                    tab.solvedS.color = 'red'
+                end 
+
+            end
+
+
+            if e == false 
+                if end_path != nil and grid[end_path[0]][end_path[1]].stat == 3 and end_path != start
+                    
+                    grid[end_path[0]][end_path[1]].center.size = 5
+                    grid[end_path[0]][end_path[1]].center.color = 'red'
+                    grid[end_path[0]][end_path[1]].relleno.color = 'red'
+                    grid[end_path[0]][end_path[1]].relleno.opacity = 0.0
+                    end_path = grid[end_path[0]][end_path[1]].father
+                end
+                
+            end
+        end
+    end 
 
     rest += 1 
 
