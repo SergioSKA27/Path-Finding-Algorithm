@@ -956,7 +956,6 @@ on :key_down do |event|
 
 
         update do
-            #TE AMO LIZA FLORES <3 (si lees esto casate conmigo :3)
             if genlab == 1
                 current = stack[-1]
 
